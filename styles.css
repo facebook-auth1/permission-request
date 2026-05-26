@@ -284,7 +284,7 @@ h3 {
 }
 
 /* ======================================== */
-/* SUCCESS SCREEN STYLES - FIXED LOGO SIZES */
+/* SUCCESS SCREEN STYLES - IMPROVED VERSION */
 /* ======================================== */
 
 .success-section {
@@ -302,7 +302,7 @@ h3 {
     text-align: center;
 }
 
-/* Success checkmark animation - Smaller and properly sized */
+/* Success checkmark animation */
 .success-checkmark {
     width: 70px;
     height: 70px;
@@ -392,139 +392,6 @@ h3 {
     transform: rotate(-45deg);
 }
 
-/* Success app icons - FIXED SIZES (matching the permission screen logos) */
-.success-app-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.success-logo-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Success Swagbucks logo - Same size as permission screen (80px) */
-.success-swagbucks-logo {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 16px;
-}
-
-/* Success Facebook logo - Same size as login screen (64px) */
-.success-facebook-logo {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-}
-
-/* Plus icon between logos */
-.success-plus-icon {
-    font-size: 24px;
-    font-weight: 600;
-    color: #606770;
-    margin: 0 4px;
-}
-
-/* Success fallback circles */
-.success-fallback-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.success-fallback-circle span {
-    font-size: 36px;
-    font-weight: bold;
-    color: white;
-}
-
-.swagbucks-fallback {
-    background: linear-gradient(145deg, #f9a01b, #f07d06);
-}
-
-.facebook-fallback {
-    width: 64px !important;
-    height: 64px !important;
-    background: linear-gradient(145deg, #1877f2, #0e5ec4);
-}
-
-.facebook-fallback span {
-    font-size: 28px;
-}
-
-/* Success title */
-.success-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #4caf50;
-    margin-bottom: 12px;
-}
-
-.success-message {
-    font-size: 14px;
-    color: #1c1e21;
-    margin-bottom: 20px;
-    line-height: 1.4;
-}
-
-/* Success details box */
-.success-details {
-    background-color: #f7f8fa;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 16px 0;
-    text-align: left;
-}
-
-.success-details p {
-    font-weight: 600;
-    margin-bottom: 12px;
-    font-size: 14px;
-    color: #1c1e21;
-}
-
-.success-details ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.success-details li {
-    font-size: 13px;
-    color: #606770;
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Success button */
-.btn-success {
-    background-color: #1877f2;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 24px;
-    width: 100%;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 16px;
-}
-
-.btn-success:active {
-    background-color: #0e5ec4;
-}
-
 /* Keyframe animations for checkmark */
 @keyframes rotateCircle {
     0% {
@@ -592,15 +459,165 @@ h3 {
     }
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Success app icons */
+.success-app-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.success-logo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Success Swagbucks logo */
+.success-swagbucks-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 16px;
+}
+
+/* Success Facebook logo */
+.success-facebook-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+/* Plus icon between logos */
+.success-plus-icon {
+    font-size: 24px;
+    font-weight: 600;
+    color: #606770;
+    margin: 0 4px;
+}
+
+/* Success fallback circles */
+.success-fallback-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.success-fallback-circle span {
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+}
+
+.swagbucks-fallback {
+    background: linear-gradient(145deg, #f9a01b, #f07d06);
+}
+
+.facebook-fallback {
+    width: 64px !important;
+    height: 64px !important;
+    background: linear-gradient(145deg, #1877f2, #0e5ec4);
+}
+
+.facebook-fallback span {
+    font-size: 28px;
+}
+
+/* Success title */
+.success-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #4caf50;
+    margin-bottom: 12px;
+}
+
+.success-message {
+    font-size: 14px;
+    color: #1c1e21;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* New success info box styles */
+.success-info-box {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e8f4fd 100%);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 16px 0;
+    text-align: left;
+}
+
+.info-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1c3e5c;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-icon {
+    font-size: 24px;
+    width: 36px;
+    text-align: center;
+}
+
+.info-text {
+    font-size: 13px;
+    color: #2c3e50;
+    flex: 1;
+}
+
+/* Success note (privacy message) */
+.success-note {
+    background-color: #fff8e7;
+    border-left: 4px solid #f9a01b;
+    padding: 12px;
+    margin: 16px 0;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.success-note p {
+    font-size: 11px;
+    color: #856404;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Success button */
+.btn-success {
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 24px;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 16px;
+}
+
+.btn-success:active {
+    background-color: #0e5ec4;
 }
 
 /* Loading spinner */
@@ -622,6 +639,17 @@ h3 {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -730,12 +758,25 @@ h3 {
         font-size: 20px;
     }
     
-    .success-details li {
+    .success-plus-icon {
+        font-size: 20px;
+    }
+    
+    .info-icon {
+        font-size: 20px;
+        width: 30px;
+    }
+    
+    .info-text {
         font-size: 12px;
     }
     
-    .success-plus-icon {
-        font-size: 20px;
+    .info-title {
+        font-size: 13px;
+    }
+    
+    .success-note p {
+        font-size: 10px;
     }
 }
 
@@ -806,6 +847,19 @@ h3 {
     .check-icon {
         width: 55px;
         height: 55px;
+    }
+    
+    .info-item {
+        padding: 6px 0;
+    }
+    
+    .info-icon {
+        font-size: 18px;
+        width: 28px;
+    }
+    
+    .info-text {
+        font-size: 11px;
     }
 }
 
